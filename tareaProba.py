@@ -3,6 +3,7 @@ import random
 import string
 import numpy as np
 import matplotlib.pyplot as plt
+from progress.bar import IncrementalBar
 
 def randomString():
     """Generador de strings aleatorios"""
@@ -89,20 +90,24 @@ class WebServer():
 class Simulation():
     """Clase Simulation: se encarga de ejecutar la simulación n veces y luego plottearla en un histograma."""
 
-    def __init__(self):
+    def __init__(self, repetitions=10000):
         self.Xvalues = []
-        for x in range(10000):
-            
+        self.repetitions = repetitions
+        bar = IncrementalBar('Simulando...', max = repetitions, suffix='%(percent)d%%')
+        for x in range(repetitions):
             webServer = WebServer()
             receiver = Receiver()
             webServer.sendPackets(receiver)
-            print(200 - receiver.countMessages())
             self.Xvalues.append(200 - receiver.countMessages())
 
-    def plotSim(self):
-        num_bins = 5
-        n, bins, patches = plt.hist(self.Xvalues, num_bins, normed=1, facecolor='blue', alpha=0.5)
+            bar.next()
+        bar.finish()
 
+    def plotSim(self):
+        plt.hist(self.Xvalues, bins='auto', facecolor='blue', alpha=0.5)
+        plt.show()
+    
 if __name__ == "__main__":
     sim = Simulation()
     sim.plotSim()
+
