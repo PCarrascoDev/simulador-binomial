@@ -59,9 +59,9 @@ class Receiver():
 
 class WebServer():
     """Clase WebServer: encargada de enviar los paquetes de datos al Receiver"""
-    def __init__(self, messagesByPacket=1):
+    def __init__(self, messagesByPacket=1, messagesNum=200):
         #Primero se generan 200 mensajes aleatorios
-        self.messages = [Message() for x in range(200)]
+        self.messages = [Message() for x in range(messagesNum)]
         self.packets = []
 
         #Luego se crean paquetes de datos para enviar los mensajes, dependiendo la cantidad de mensajes.
@@ -90,21 +90,23 @@ class WebServer():
 class Simulation():
     """Clase Simulation: se encarga de ejecutar la simulación n veces y luego plottearla en un histograma."""
 
-    def __init__(self, repetitions=10000):
+    def __init__(self, repetitions=10000, messagesByPacket=1, messagesNum=200):
         self.Xvalues = []
         self.repetitions = repetitions
         bar = IncrementalBar('Simulando...', max = repetitions, suffix='%(percent)d%%')
         for x in range(repetitions):
-            webServer = WebServer()
+            webServer = WebServer(messagesByPacket)
             receiver = Receiver()
             webServer.sendPackets(receiver)
-            self.Xvalues.append(200 - receiver.countMessages())
+            self.Xvalues.append(messagesNum - receiver.countMessages())
 
             bar.next()
         bar.finish()
 
     def plotSim(self):
-        plt.hist(self.Xvalues, bins='auto', facecolor='blue', alpha=0.5)
+        n, bins, patches = plt.hist(self.Xvalues, bins=range(min(self.Xvalues), max(self.Xvalues) + 1, 1), facecolor='blue', alpha=0.5)
+        plt.xticks(bins)
+        plt.grid()
         plt.show()
     
 if __name__ == "__main__":
