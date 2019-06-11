@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from progress.bar import IncrementalBar
 
+
 def randomString():
     """Generador de strings aleatorios"""
     stringLength = random.randint(1, 100)
@@ -107,6 +108,8 @@ class Simulation():
         n, bins, patches = plt.hist(self.Xvalues, bins=range(min(self.Xvalues), max(self.Xvalues) + 1, 1), facecolor='blue', alpha=0.5)
         plt.xticks(bins)
         plt.grid()
+        plt.xlabel("X (Mensajes no enviados correctamente)")
+        plt.ylabel("Frecuencia")
         plt.show()
     
 if __name__ == "__main__":
